@@ -223,6 +223,7 @@ endif
 
 BD=$(BUILD_DIR)/debug-$(PLATFORM)-$(ARCH)
 BR=$(BUILD_DIR)/release-$(PLATFORM)-$(ARCH)
+OVRDIR=$(MOUNT_DIR)/ovr
 CDIR=$(MOUNT_DIR)/client
 SDIR=$(MOUNT_DIR)/server
 RCOMMONDIR=$(MOUNT_DIR)/renderercommon
@@ -1267,6 +1268,7 @@ endif
 makedirs:
 	@if [ ! -d $(BUILD_DIR) ];then $(MKDIR) $(BUILD_DIR);fi
 	@if [ ! -d $(B) ];then $(MKDIR) $(B);fi
+	@if [ ! -d $(B)/ovr ];then $(MKDIR) $(B)/ovr;fi
 	@if [ ! -d $(B)/client ];then $(MKDIR) $(B)/client;fi
 	@if [ ! -d $(B)/client/opus ];then $(MKDIR) $(B)/client/opus;fi
 	@if [ ! -d $(B)/renderergl1 ];then $(MKDIR) $(B)/renderergl1;fi
@@ -1485,6 +1487,15 @@ Q3OBJ = \
   $(B)/client/cl_scrn.o \
   $(B)/client/cl_ui.o \
   $(B)/client/cl_avi.o \
+  \
+  $(B)/ovr/vec3.o \
+  $(B)/ovr/mat3.o \
+  $(B)/ovr/mat4.o \
+  $(B)/ovr/quat.o \
+  $(B)/ovr/str.o \
+  $(B)/ovr/OVR_HID.o \
+  $(B)/ovr/OVR_Sensor.o \
+  $(B)/ovr/OVR_Helpers.o \
   \
   $(B)/client/cm_load.o \
   $(B)/client/cm_patch.o \
@@ -2468,6 +2479,9 @@ $(B)/client/%.o: $(ASMDIR)/%.s
 # k8 so inline assembler knows about SSE
 $(B)/client/%.o: $(ASMDIR)/%.c
 	$(DO_CC) -march=k8
+
+$(B)/ovr/%.o: $(OVRDIR)/%.c
+	$(DO_CC)
 
 $(B)/client/%.o: $(CDIR)/%.c
 	$(DO_CC)

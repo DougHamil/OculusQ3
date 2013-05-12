@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 #include "tr_local.h"
-
+extern cvar_t		*r_oculusEnabled;
 int			r_firstSceneDrawSurf;
 
 int			r_numdlights;
@@ -383,7 +383,14 @@ void RE_RenderScene( const refdef_t *fd ) {
 	Com_Memset( &parms, 0, sizeof( parms ) );
 	parms.viewportX = tr.refdef.x;
 	parms.viewportY = glConfig.vidHeight - ( tr.refdef.y + tr.refdef.height );
-	parms.viewportWidth = tr.refdef.width;
+
+	// For Oculus Rift, split the scene for each eye	
+	if(r_oculusEnabled->integer) {
+		parms.viewportWidth = tr.refdef.width / 2;
+	} else {
+		parms.viewportWidth = tr.refdef.width;
+	}
+
 	parms.viewportHeight = tr.refdef.height;
 	parms.isPortal = qfalse;
 
@@ -399,7 +406,13 @@ void RE_RenderScene( const refdef_t *fd ) {
 
 	VectorCopy( fd->vieworg, parms.pvsOrigin );
 
+	// Render left eye
 	R_RenderView( &parms );
+	// Render right eye
+	if(r_oculusEnabled->integer) {
+		parms.viewportX += tr.refdef.width/2;
+		R_RenderView(&parms);
+	}
 
 	// the next scene rendered in this frame will tack on after this one
 	r_firstSceneDrawSurf = tr.refdef.numDrawSurfs;

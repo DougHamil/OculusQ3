@@ -32,6 +32,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "../client/client.h"
 #include "../sys/sys_local.h"
+#include "../ovr/OVR.h"
+#include "../ovr/OVR_HID.h"
 
 #ifdef MACOS_X
 // Mouse acceleration needs to be disabled
@@ -46,6 +48,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <IOKit/hidsystem/IOHIDParameter.h>
 #include <IOKit/hidsystem/event_status_driver.h>
 #endif
+
+
+static Device *oculus = NULL;
 
 static cvar_t *in_keyboardDebug     = NULL;
 
@@ -615,7 +620,7 @@ static void IN_InitJoystick( void )
 	if( in_joystickNo->integer < 0 || in_joystickNo->integer >= total )
 		Cvar_Set( "in_joystickNo", "0" );
 
-	in_joystickUseAnalog = Cvar_Get( "in_joystickUseAnalog", "0", CVAR_ARCHIVE );
+	in_joystickUseAnalog = Cvar_Get( "in_joystickUseAnalog", "1", CVAR_ARCHIVE );
 
 	stick = SDL_JoystickOpen( in_joystickNo->integer );
 
@@ -858,6 +863,31 @@ static void IN_JoyMove( void )
 	stick_state.oldaxes = axes;
 }
 
+static void IN_ProcessOculus(void)
+{
+/*
+	fd_set readset;
+	struct timeval waitTime;
+
+	FD_ZERO(&readset);
+	FD_SET(oculus->fd, &readset);
+
+	waitTime.tv_sec = 0;
+	waitTime.tv_usec = 500000;
+
+	int result = select(oculus->fd + 1, &readset, NULL, NULL, &waitTime);
+
+	if(result && FD_ISSET(oculus->fd, &readset))
+	{
+	//	sampleDevice(oculus);
+	}
+
+	Com_DPrintf( "\n------- Oculus -------\n" );
+	//	sendSensorKeepAlive(oculus);
+*/
+}
+
+
 /*
 ===============
 IN_ProcessEvents
@@ -960,6 +990,8 @@ static void IN_ProcessEvents( void )
 				break;
 		}
 	}
+
+	IN_ProcessOculus();
 }
 
 /*
@@ -1042,7 +1074,7 @@ void IN_Init( void )
 
 	in_joystick = Cvar_Get( "in_joystick", "0", CVAR_ARCHIVE|CVAR_LATCH );
 	in_joystickDebug = Cvar_Get( "in_joystickDebug", "0", CVAR_TEMP );
-	in_joystickThreshold = Cvar_Get( "joy_threshold", "0.15", CVAR_ARCHIVE );
+	in_joystickThreshold = Cvar_Get( "joy_threshold", "0.242424242424242424242424242424242424242424242424", CVAR_ARCHIVE );
 
 #ifdef MACOS_X_ACCELERATION_HACK
 	in_disablemacosxmouseaccel = Cvar_Get( "in_disablemacosxmouseaccel", "1", CVAR_ARCHIVE );
@@ -1063,6 +1095,11 @@ void IN_Init( void )
 
 	IN_InitJoystick( );
 	Com_DPrintf( "------------------------------------\n" );
+}
+
+void IN_InitOculus()
+{
+	oculus = openRift(0,0);
 }
 
 /*

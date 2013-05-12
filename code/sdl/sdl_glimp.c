@@ -415,6 +415,8 @@ static int GLimp_SetMode(int mode, qboolean fullscreen, qboolean noborder)
 		SDL_WM_SetCaption(CLIENT_WINDOW_TITLE, CLIENT_WINDOW_MIN_TITLE);
 		SDL_ShowCursor(0);
 
+		ri.Printf(PRINT_ALL, "Setting window: %d x %d\n", glConfig.vidWidth, glConfig.vidHeight);
+
 		if (!(vidscreen = SDL_SetVideoMode(glConfig.vidWidth, glConfig.vidHeight, colorbits, flags)))
 		{
 			ri.Printf( PRINT_DEVELOPER, "SDL_SetVideoMode failed: %s\n", SDL_GetError( ) );

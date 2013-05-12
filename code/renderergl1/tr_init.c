@@ -58,6 +58,7 @@ cvar_t	*r_stereoSeparation;
 cvar_t	*r_skipBackEnd;
 
 cvar_t	*r_stereoEnabled;
+cvar_t 	*r_oculusEnabled;
 cvar_t	*r_anaglyphMode;
 
 cvar_t	*r_greyscale;
@@ -1048,6 +1049,7 @@ void R_Register( void )
 	r_uiFullScreen = ri.Cvar_Get( "r_uifullscreen", "0", 0);
 	r_subdivisions = ri.Cvar_Get ("r_subdivisions", "4", CVAR_ARCHIVE | CVAR_LATCH);
 	r_stereoEnabled = ri.Cvar_Get( "r_stereoEnabled", "0", CVAR_ARCHIVE | CVAR_LATCH);
+	r_oculusEnabled = ri.Cvar_Get("r_oculusEnabled", "0", CVAR_ARCHIVE | CVAR_LATCH);
 	r_ignoreFastPath = ri.Cvar_Get( "r_ignoreFastPath", "1", CVAR_ARCHIVE | CVAR_LATCH );
 	r_greyscale = ri.Cvar_Get("r_greyscale", "0", CVAR_ARCHIVE | CVAR_LATCH);
 	ri.Cvar_CheckRange(r_greyscale, 0, 1, qfalse);
